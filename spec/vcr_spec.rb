@@ -108,6 +108,9 @@ describe 'VCR for WS' do
       VCR::WebSocket.record(example, self) do
         # nothing
       end
+      prefix = VCR::WebSocket.configuration.cassette_library_dir
+      name = 'automatically_picked_cassette_name_is_ok,_when_using_context_foo_and_example_bar.json'
+      expect(File.exist?(prefix + '/VCR_for_WS/' + name)).to be true
     end
   end
 
@@ -116,12 +119,18 @@ describe 'VCR for WS' do
       VCR::WebSocket.record(example, self) do
         # nothing
       end
+      prefix = VCR::WebSocket.configuration.cassette_library_dir
+      name = 'automatically_picked_cassette_name_is_ok,_when_describing_parent_and_example_child1.json'
+      expect(File.exist?(prefix + '/VCR_for_WS/' + name)).to be true
     end
 
     it 'and example child2' do
       VCR::WebSocket.record(example, self) do
         # nothing
       end
+      prefix = VCR::WebSocket.configuration.cassette_library_dir
+      name = 'automatically_picked_cassette_name_is_ok,_when_describing_parent_and_example_child2.json'
+      expect(File.exist?(prefix + '/VCR_for_WS/' + name)).to be true
     end
   end
 
