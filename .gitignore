@@ -1,0 +1,50 @@
+## Environment normalisation:
+/.bundle/
+/vendor/bundle
+/lib/bundler/man/
+
+# for a library or gem, you might want to ignore these files since the code is
+# intended to run in multiple environments; otherwise, check them in:
+Gemfile.lock
+# .ruby-version
+# .ruby-gemset
+
+# unless supporting rvm < 1.11.0 or doing something fancy, ignore this:
+.rvmrc
+
+# test config
+spec/endpoint.yml
+
+# IDE files
+.project
+.classpath
+.settings
+.idea
+*.ipr
+*.iml
+*.iws
+nb-configuration.xml
+
+# KDE
+.directory
+
+# OSX
+.DS_Store
+
+# Ruby
+*.gem
+*.rbc
+.bundle
+.yardoc
+Gemfile.lock
+InstalledFiles
+_yardoc
+coverage
+doc/
+pkg
+rdoc
+spec/reports
+test/tmp
+test/version_tmp
+*.gem
+tmp

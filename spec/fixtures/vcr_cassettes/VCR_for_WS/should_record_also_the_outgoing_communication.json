@@ -1,0 +1,21 @@
+[
+  [
+    {
+      "operation": "read",
+      "type": "text",
+      "data": "WelcomeResponse={\"sessionId\":\"-gGp6ATYH0bEfiOtumWEnieSFNgRtHL3i0RAndui\"}"
+    },
+    {
+      "operation": "write",
+      "data": "something 1"
+    },
+    {
+      "operation": "write",
+      "data": "something 2"
+    },
+    {
+      "operation": "write",
+      "data": "something 3"
+    }
+  ]
+]

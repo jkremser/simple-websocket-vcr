@@ -1,0 +1,12 @@
+[
+  [
+    {
+      "operation": "read",
+      "type": "text",
+      "data": "WelcomeResponse={\"sessionId\":\"QDPovsVv6q8eZx4ARSa6tdU4PJDJH1Bo4j45u3SQ\"}"
+    },
+    {
+      "operation": "close"
+    }
+  ]
+]
