@@ -1,7 +1,7 @@
 require 'delegate'
 require 'websocket-client-simple'
 require 'base64'
-require 'vcr/errors'
+require 'simple-websocket-vcr/errors'
 
 module VCR
   module WebSocket

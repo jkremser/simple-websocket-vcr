@@ -1,8 +1,8 @@
-require 'vcr/cassette'
-require 'vcr/configuration'
-require 'vcr/errors'
-require 'vcr/recordable_websocket_client'
-require 'vcr/version'
+require 'simple-websocket-vcr/cassette'
+require 'simple-websocket-vcr/configuration'
+require 'simple-websocket-vcr/errors'
+require 'simple-websocket-vcr/recordable_websocket_client'
+require 'simple-websocket-vcr/version'
 require 'json'
 require 'websocket-client-simple'
 

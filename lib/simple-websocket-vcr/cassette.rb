@@ -1,4 +1,4 @@
-require 'vcr/errors'
+require 'simple-websocket-vcr/errors'
 require 'fileutils'
 
 module VCR

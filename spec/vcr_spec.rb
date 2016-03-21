@@ -1,4 +1,4 @@
-require 'vcr'
+require 'simple-websocket-vcr'
 require 'thread'
 require 'websocket-client-simple'
 require 'json'
