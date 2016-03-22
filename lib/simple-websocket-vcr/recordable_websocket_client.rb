@@ -99,11 +99,13 @@ module VCR
       end
 
       def _ensure_operation(desired, actual)
+        # TODO: this should lead to failure in rspec
         string = "Expected to '#{desired}' but next in recording was '#{actual}'"
         raise OperationMismatchError string unless desired == actual
       end
 
       def _ensure_data(desired, actual)
+        # TODO: this should lead to failure in rspec
         string = "Expected data to be '#{desired}' but next in recording was '#{actual}'"
         raise DataMismatchError string unless desired == actual
       end
