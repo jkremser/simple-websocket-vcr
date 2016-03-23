@@ -3,11 +3,24 @@ require 'thread'
 require 'websocket-client-simple'
 require 'json'
 
+
+# class Object
+#   alias real_sleep sleep
+#
+#   def sleep(*args)
+#     real_sleep(*args) if !VCR::WebSocket.cassette || VCR::WebSocket.cassette.recording?
+#   end
+# end
+
 describe 'VCR for WS' do
   HOST = 'localhost:8080'.freeze
 
   let(:example) do |e|
     e
+  end
+
+  let(:should_sleep) do |_|
+    !VCR::WebSocket.cassette || VCR::WebSocket.cassette.recording?
   end
 
   before(:each) do
@@ -23,7 +36,7 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1
+      sleep 1 if should_sleep
 
       expect(c).not_to be nil
       expect(c.open?).to be true
@@ -39,7 +52,7 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1
+      sleep 1 if should_sleep
       c.send('something 1')
       c.send('something 2')
       c.send('something 3')
@@ -58,11 +71,11 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1
+      sleep 1 if should_sleep
 
       expect(c).not_to be nil
       expect(c.open?).to be true
-      sleep 1
+      sleep 1 if should_sleep
       c.close
       expect(c.open?).to be false
     end
@@ -78,20 +91,20 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1
+      sleep 1 if should_sleep
       c.send('something_1')
       c.on(:message, once: true, &:data)
-      sleep 1
+      sleep 1 if should_sleep
 
       c.send('something_2')
       c.on(:message, once: true, &:data)
-      sleep 1
+      sleep 1 if should_sleep
 
       expect(c).not_to be nil
       expect(c.open?).to be true
       c.close
       expect(c.open?).to be false
-      sleep 1
+      sleep 1 if should_sleep
     end
 
     # check that everything was recorded in the json file

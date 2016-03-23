@@ -54,11 +54,15 @@ module VCR
     end
 
     def turned_on?
-      # TODO: impl
+      !@cassette.nil?
     end
 
     def turn_on!
       # TODO: impl
+    end
+
+    def live?
+      @cassette && @cassette.recording?
     end
 
     private
