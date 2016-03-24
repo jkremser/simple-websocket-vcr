@@ -14,7 +14,7 @@ module VCR
       attr_accessor :recording, :open, :thread
 
       def initialize(cassette, real_client)
-        raise NoCassetteError 'specify the cassette' unless cassette
+        fail NoCassetteError 'specify the cassette' unless cassette
 
         if cassette.recording?
           @live = true
@@ -119,12 +119,12 @@ module VCR
 
       def _ensure_operation(desired, actual)
         string = "Expected to '#{desired}' but the next operation in recording was '#{actual}'"
-        raise string unless desired == actual
+        fail string unless desired == actual
       end
 
       def _ensure_data(desired, actual)
         string = "Expected data to be '#{desired}' but next data in recording was '#{actual}'"
-        raise string unless desired == actual
+        fail string unless desired == actual
       end
     end
   end

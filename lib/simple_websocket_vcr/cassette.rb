@@ -8,7 +8,7 @@ module VCR
     class Cassette
       attr_reader :name, :recording
 
-      alias recording? recording
+      alias_method :recording?, :recording
 
       def initialize(name)
         @name = name
@@ -28,7 +28,7 @@ module VCR
           @sessions << []
           @sessions.last
         else
-          raise NoMoreSessionsError if @sessions.empty?
+          fail NoMoreSessionsError if @sessions.empty?
           @sessions.shift
         end
       end
