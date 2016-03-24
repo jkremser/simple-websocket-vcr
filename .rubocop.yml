@@ -24,3 +24,5 @@ ModuleLength:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
+Style/ModuleFunction:
+  Enabled: false
