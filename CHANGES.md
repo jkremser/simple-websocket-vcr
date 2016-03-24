@@ -3,7 +3,7 @@
 This document describes the relevant changes between releases of the
 _simple-websocket-vcr_ project.
 
-### 0.0.5
+### 0.0.5 (not released yet)
 * version is aligned with the VCR module so that coverall could do its job properly (https://travis-ci.org/Jiri-Kremser/simple-websocket-vcr/jobs/118142774#L215)
 
 ### 0.0.4
