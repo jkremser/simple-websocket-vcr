@@ -1,4 +1,4 @@
-require 'simple-websocket-vcr/errors'
+require 'simple_websocket_vcr/errors'
 require 'fileutils'
 
 module VCR
@@ -8,7 +8,7 @@ module VCR
     class Cassette
       attr_reader :name, :recording
 
-      alias recording? recording
+      alias_method :recording?, :recording
 
       def initialize(name)
         @name = name
@@ -28,17 +28,16 @@ module VCR
           @sessions << []
           @sessions.last
         else
-          raise NoMoreSessionsError if @sessions.empty?
+          fail NoMoreSessionsError if @sessions.empty?
           @sessions.shift
         end
       end
 
       def save
-        if recording?
-          dirname = File.dirname(filename)
-          FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
-          File.open(filename, 'w') { |f| f.write(JSON.pretty_generate(@sessions)) }
-        end
+        return unless recording?
+        dirname = File.dirname(filename)
+        FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
+        File.open(filename, 'w') { |f| f.write(JSON.pretty_generate(@sessions)) }
       end
 
       protected

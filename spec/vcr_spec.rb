@@ -1,8 +1,7 @@
-require 'simple-websocket-vcr'
+require 'simple_websocket_vcr'
 require 'thread'
 require 'websocket-client-simple'
 require 'json'
-
 
 # class Object
 #   alias real_sleep sleep

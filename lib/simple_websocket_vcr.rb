@@ -1,8 +1,8 @@
-require 'simple-websocket-vcr/cassette'
-require 'simple-websocket-vcr/configuration'
-require 'simple-websocket-vcr/errors'
-require 'simple-websocket-vcr/recordable_websocket_client'
-require 'simple-websocket-vcr/version'
+require 'simple_websocket_vcr/cassette'
+require 'simple_websocket_vcr/configuration'
+require 'simple_websocket_vcr/errors'
+require 'simple_websocket_vcr/recordable_websocket_client'
+require 'simple_websocket_vcr/version'
 require 'json'
 require 'websocket-client-simple'
 
@@ -36,7 +36,7 @@ module VCR
     end
 
     def use_cassette(name, _options = {})
-      raise ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
+      fail ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
       self.cassette = Cassette.new(name)
       yield
       cassette.save
@@ -44,12 +44,12 @@ module VCR
     end
 
     def record(example, context, options = {}, &block)
-      raise ArgumentError, '`VCR.record` requires a block.' unless block_given?
+      fail ArgumentError, '`VCR.record` requires a block.' unless block_given?
       name = filename_helper(example, context)
       use_cassette(name, options, &block)
     end
 
-    def turn_off!(options = {})
+    def turn_off!(_options = {})
       # TODO: impl
     end
 
@@ -85,7 +85,7 @@ end
 
 module WebSocket::Client::Simple
   class << self
-    alias real_connect connect
+    alias_method :real_connect, :connect
 
     def connect(url, options = {})
       if VCR::WebSocket.configuration.hook_uris.any? { |u| url.include?(u) }
