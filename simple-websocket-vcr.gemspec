@@ -19,12 +19,12 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_paths = ['lib']
 
-  gem.add_development_dependency 'shoulda'
+  gem.add_development_dependency 'shoulda', '~> 3.5'
   gem.add_development_dependency 'rspec-rails', '~> 3.0'
   gem.add_development_dependency 'rake', '~> 11'
-  gem.add_development_dependency 'vcr'
+  gem.add_development_dependency 'vcr', '~> 2.9'
   gem.add_development_dependency 'webmock', '~> 1.7'
   gem.add_development_dependency 'rubocop', '= 0.34.2'
   gem.add_development_dependency 'websocket-client-simple', '~> 0.3'
-  gem.add_development_dependency 'coveralls'
+  gem.add_development_dependency 'coveralls', '~> 0.8'
 end
