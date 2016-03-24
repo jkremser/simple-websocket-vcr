@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'simple_websocket_vcr/version'
+require 'simple_websocket_vcr'
 
 Gem::Specification.new do |gem|
   gem.name          = 'simple-websocket-vcr'
-  gem.version       = VCR::WebSocket::VERSION
+  gem.version       = VCR::WebSocket.version
   gem.authors       = ['Jirka Kremser']
   gem.email         = ['jkremser@redhat.com']
   gem.description   = 'Websocket VCR add-on'

@@ -2,12 +2,48 @@ require 'simple_websocket_vcr/cassette'
 require 'simple_websocket_vcr/configuration'
 require 'simple_websocket_vcr/errors'
 require 'simple_websocket_vcr/recordable_websocket_client'
-require 'simple_websocket_vcr/version'
 require 'json'
 require 'websocket-client-simple'
 
 module VCR
+  extend self
+
+  # @return [String] the current VCR version.
+  # @note This string also has singleton methods:
+  #
+  #   * `major` [Integer] The major version.
+  #   * `minor` [Integer] The minor version.
+  #   * `patch` [Integer] The patch version.
+  #   * `parts` [Array<Integer>] List of the version parts.
+  def version
+    @version ||= begin
+      string = '0.0.5'.freeze
+
+      def string.parts
+        split('.').map(&:to_i)
+      end
+
+      def string.major
+        parts[0]
+      end
+
+      def string.minor
+        parts[1]
+      end
+
+      def string.patch
+        parts[2]
+      end
+
+      string
+    end
+  end
+
   module WebSocket
+    def self.version
+      VCR.version
+    end
+
     def configure
       yield configuration
     end
@@ -36,7 +72,7 @@ module VCR
     end
 
     def use_cassette(name, _options = {})
-      fail ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
+      raise ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
       self.cassette = Cassette.new(name)
       yield
       cassette.save
@@ -44,7 +80,7 @@ module VCR
     end
 
     def record(example, context, options = {}, &block)
-      fail ArgumentError, '`VCR.record` requires a block.' unless block_given?
+      raise ArgumentError, '`VCR.record` requires a block.' unless block_given?
       name = filename_helper(example, context)
       use_cassette(name, options, &block)
     end
@@ -85,7 +121,7 @@ end
 
 module WebSocket::Client::Simple
   class << self
-    alias_method :real_connect, :connect
+    alias real_connect connect
 
     def connect(url, options = {})
       if VCR::WebSocket.configuration.hook_uris.any? { |u| url.include?(u) }

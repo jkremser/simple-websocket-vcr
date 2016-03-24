@@ -14,7 +14,7 @@ module VCR
       attr_accessor :recording, :open, :thread
 
       def initialize(cassette, real_client)
-        fail NoCassetteError 'specify the cassette' unless cassette
+        raise NoCassetteError 'specify the cassette' unless cassette
 
         if cassette.recording?
           @live = true
@@ -76,13 +76,13 @@ module VCR
         end
       end
 
-      def _read(event, params, &block)
+      def _read(event, params, &_block)
         if @live
           rec = @recording
           @client.on(event, params) do |msg|
             data = msg.type == :text ? msg.data : Base64.decode64(msg.data)
             rec << { operation: 'read', type: msg.type, data: data }
-            block.call(msg)
+            yield(msg)
           end
         else
           wait_for_reads(event, params[:once])
@@ -119,12 +119,12 @@ module VCR
 
       def _ensure_operation(desired, actual)
         string = "Expected to '#{desired}' but the next operation in recording was '#{actual}'"
-        fail string unless desired == actual
+        raise string unless desired == actual
       end
 
       def _ensure_data(desired, actual)
         string = "Expected data to be '#{desired}' but next data in recording was '#{actual}'"
-        fail string unless desired == actual
+        raise string unless desired == actual
       end
     end
   end
