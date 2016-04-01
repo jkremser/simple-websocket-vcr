@@ -4,6 +4,7 @@ require 'simple_websocket_vcr/errors'
 require 'simple_websocket_vcr/recordable_websocket_client'
 require 'simple_websocket_vcr/version'
 require 'json'
+require 'yaml'
 require 'websocket-client-simple'
 
 module VCR
