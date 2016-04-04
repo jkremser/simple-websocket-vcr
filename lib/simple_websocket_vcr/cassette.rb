@@ -12,8 +12,8 @@ module VCR
 
       def initialize(name)
         @name = name
-        # @using_json = VCR::WebSocket.configuration.json_cassettes
-        @using_json = true
+        @using_json = VCR::WebSocket.configuration.json_cassettes
+        @name += @using_json ? '.json' : '.yml'
 
         if File.exist?(filename)
           @recording = false
@@ -42,9 +42,10 @@ module VCR
         # make sure the directory structure is there
         FileUtils.mkdir_p(dirname) unless File.directory?(dirname)
         if @using_json
-          text = JSON.pretty_generate(@sessions.map{|session| session.record_entries})
+          text = JSON.pretty_generate(@sessions.map(&:record_entries))
         else
-          # todo yaml
+          # TODO: :data: !ruby/string:WebSocket::Frame::Data 'GenericErrorResponse={"e..
+          text = { 'websocket_interactions' => @sessions.map(&:record_entries) }.to_yaml(Indent: 8)
         end
         File.open(filename, 'w') { |f| f.write(text) }
       end
@@ -64,7 +65,7 @@ module VCR
       end
 
       def store(entry)
-        hash = entry.is_a?(RecordEntry) ? entry.attributes : entry
+        hash = entry.is_a?(RecordEntry) ? entry.attributes.map(&:to_s) : entry.map { |k, v| [k.to_s, v.to_s] }.to_h
         @record_entries << hash
       end
 
@@ -83,13 +84,13 @@ module VCR
 
     class RecordedJsonSession < RecordedSession
       def self.load(json)
-        json.map{|session| RecordedJsonSession.new(session)}
+        json.map { |session| RecordedJsonSession.new(session) }
       end
     end
 
     class RecordedYamlSession < RecordedSession
       def self.load(yaml)
-        yaml['websocket_interactions'].map{|session| RecordedYamlSession.new(session)}
+        yaml['websocket_interactions'].map { |session| RecordedYamlSession.new(session) }
       end
     end
 

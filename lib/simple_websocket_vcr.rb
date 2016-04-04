@@ -119,7 +119,7 @@ module VCR
         example_name = "#{context.class.metadata[:description]}_#{example.description}".gsub(/\s+/, '_')
         directory = context.class.metadata[:parent_example_group][:description].gsub(/\s+/, '_')
       end
-      "#{directory}/#{example_name}.json"
+      "#{directory}/#{example_name}"
     end
 
     module_function :configure, :configuration, :cassette, :cassette=, :disabled, :disabled=, :save_session,
