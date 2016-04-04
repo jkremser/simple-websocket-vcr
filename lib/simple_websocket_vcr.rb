@@ -69,9 +69,14 @@ module WebSocketVCR
   def save_session
   end
 
-  def use_cassette(name, _options = {})
+  # Use the specified cassette for either recording the real communication or replaying it during the tests.
+  # @param name [String] the cassette
+  # @param options [Hash] options for the cassette
+  # @option options [Symbol] :record if set to :none there will be no recording
+  # @option options [Symbol] :erb a sub-hash with variables used for ERB substitution in given cassette
+  def use_cassette(name, options = {})
     fail ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
-    self.cassette = Cassette.new(name)
+    self.cassette = Cassette.new(name, options)
     yield
     cassette.save
     self.cassette = nil

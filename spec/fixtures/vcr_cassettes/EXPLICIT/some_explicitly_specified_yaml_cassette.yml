@@ -2,7 +2,7 @@
 websocket_interactions:
 - - operation: read
     type: text
-    data: WelcomeResponse={"sessionId":"Wk5AgRVBjxWhBIihLTxsA3IjZkpZoAlhJP6mHsiP"}
+    data: WelcomeResponse={"sessionId":"<%= foobar %>"}
   - operation: write
     data: something_1
   - operation: read

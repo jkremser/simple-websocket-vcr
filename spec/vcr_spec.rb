@@ -218,5 +218,60 @@ describe 'VCR for WS' do
         WebSocketVCR.configure { |c| c.hook_uris = ['127.0.0.1:1337'] }
       end.to change { WebSocketVCR.configuration.hook_uris }.from([]).to(['127.0.0.1:1337'])
     end
+
+    it 'has an empty list of hook ports by default' do
+      expect(WebSocketVCR.configuration.hook_uris).to eq([])
+    end
+  end
+
+  context 'with cassette options' do
+    it 'with :record set to :none and no cassette, it should fail' do
+      prefix = WebSocketVCR.configuration.cassette_library_dir
+      cassette_path = '/EXPLICIT/something_nonexistent'
+      expect do
+        WebSocketVCR.use_cassette(cassette_path, record: :none) do
+          fail 'this code should not be reachable'
+        end
+      end.to raise_error(RuntimeError)
+      expect(File.exist?(prefix + cassette_path + '.yml')).to be false
+    end
+
+    def test_substitution(text1, text2 = nil)
+      url = "ws://#{HOST}/hawkular/command-gateway/ui/ws"
+      c = WebSocket::Client::Simple.connect url do |client|
+        client.on(:message, once: true) do |msg|
+          expect(msg.data).to include(text1)
+        end
+      end
+      sleep 1 if should_sleep
+      text2 ||= 'something_1'
+      c.send(text2)
+      c.on(:message, once: true) do |msg|
+        expect(msg.data).to include("Cannot deserialize: [#{text2}]")
+      end
+    end
+
+    it 'with :erb set to {something: 11223344}, it should replace the variable in yaml cassette' do
+      cassette_path = '/EXPLICIT/some_template'
+      WebSocketVCR.configure do |c|
+        c.hook_uris = [HOST]
+      end
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 11_223_344 }) do
+        test_substitution '11223344'
+      end
+      file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
+      expect(File.readlines(file_path).grep(/<%= something %>/).size).to eq(1)
+    end
+
+    it 'with :erb set to {something: world, bar: hello}, it should replace the variables in json cassette' do
+      cassette_path = '/EXPLICIT/some_template'
+      WebSocketVCR.configure do |c|
+        c.hook_uris = [HOST]
+        c.json_cassettes = true
+      end
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 'world', bar: 'hello' }) do
+        test_substitution 'world', 'hello'
+      end
+    end
   end
 end
