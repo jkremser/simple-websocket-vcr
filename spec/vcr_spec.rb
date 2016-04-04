@@ -229,7 +229,7 @@ describe 'VCR for WS' do
       prefix = WebSocketVCR.configuration.cassette_library_dir
       cassette_path = '/EXPLICIT/something_nonexistent'
       expect do
-        WebSocketVCR.use_cassette(cassette_path, {record: :none}) do
+        WebSocketVCR.use_cassette(cassette_path, record: :none) do
           fail 'this code should not be reachable'
         end
       end.to raise_error(RuntimeError)
@@ -256,7 +256,7 @@ describe 'VCR for WS' do
       WebSocketVCR.configure do |c|
         c.hook_uris = [HOST]
       end
-      WebSocketVCR.use_cassette(cassette_path, {erb: {something: 11223344}}) do
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 11_223_344 }) do
         test_substitution '11223344'
       end
       file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
@@ -269,7 +269,7 @@ describe 'VCR for WS' do
         c.hook_uris = [HOST]
         c.json_cassettes = true
       end
-      WebSocketVCR.use_cassette(cassette_path, {erb: {something: 'world', bar: 'hello'}}) do
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 'world', bar: 'hello' }) do
         test_substitution 'world', 'hello'
       end
     end

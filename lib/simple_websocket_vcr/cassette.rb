@@ -17,24 +17,7 @@ module WebSocketVCR
 
       if File.exist?(filename)
         @recording = false
-        file_content = File.open(filename, &:read)
-
-        # do the ERB substitution
-        unless @options[:erb].nil?
-          require 'ostruct'
-          namespace = OpenStruct.new(@options[:erb])
-          file_content = ERB.new(file_content).result(namespace.instance_eval{ binding })
-        end
-
-        # parse JSON/YAML
-        if @using_json
-          parsed_content = JSON.parse(file_content)
-          @sessions = RecordedJsonSession.load(parsed_content)
-        else
-          parsed_content = YAML.load(file_content)
-          @sessions = RecordedYamlSession.load(parsed_content)
-        end
-
+        @sessions = initialize_sessions filename
       else
         fail "No cassette '#{name}' found and recording has been turned off" if @options[:record] == :none
         @recording = true
@@ -60,7 +43,6 @@ module WebSocketVCR
       if @using_json
         text = JSON.pretty_generate(@sessions.map(&:record_entries))
       else
-        # TODO: :data: !ruby/string:WebSocket::Frame::Data 'GenericErrorResponse={"e..
         text = { 'websocket_interactions' => @sessions.map(&:record_entries) }.to_yaml(Indent: 8)
       end
       File.open(filename, 'w') { |f| f.write(text) }
@@ -70,6 +52,29 @@ module WebSocketVCR
 
     def filename
       "#{WebSocketVCR.configuration.cassette_library_dir}/#{name}"
+    end
+
+    private
+
+    def initialize_sessions(filename)
+      file_content = File.open(filename, &:read)
+
+      # do the ERB substitution
+      unless @options[:erb].nil?
+        require 'ostruct'
+        namespace = OpenStruct.new(@options[:erb])
+        file_content = ERB.new(file_content).result(namespace.instance_eval { binding })
+      end
+
+      # parse JSON/YAML
+      if @using_json
+        parsed_content = JSON.parse(file_content)
+        sessions = RecordedJsonSession.load(parsed_content)
+      else
+        parsed_content = YAML.load(file_content)
+        sessions = RecordedYamlSession.load(parsed_content)
+      end
+      sessions
     end
   end
 
