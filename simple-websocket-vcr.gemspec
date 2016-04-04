@@ -5,7 +5,7 @@ require 'simple_websocket_vcr/version'
 
 Gem::Specification.new do |gem|
   gem.name          = 'simple-websocket-vcr'
-  gem.version       = VCR::WebSocket::VERSION
+  gem.version       = WebSocketVCR::VERSION
   gem.authors       = ['Jirka Kremser']
   gem.email         = ['jkremser@redhat.com']
   gem.description   = 'Websocket VCR add-on'

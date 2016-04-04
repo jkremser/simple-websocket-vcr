@@ -1,0 +1,6 @@
+---
+websocket_interactions:
+- - operation: read
+    type: text
+    data: WelcomeResponse={"sessionId":"3CEro9B5w8IUD4DAaVxRocyKm-rMVXLMlECNwfgD"}
+  - operation: close
