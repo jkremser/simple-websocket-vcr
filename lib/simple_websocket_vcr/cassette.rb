@@ -5,21 +5,38 @@ module WebSocketVCR
   include Errors
 
   class Cassette
-    attr_reader :name, :recording, :sessions
+    attr_reader :name, :options, :recording, :sessions
 
     alias_method :recording?, :recording
 
-    def initialize(name)
+    def initialize(name, options)
       @name = name
+      @options = options
       @using_json = WebSocketVCR.configuration.json_cassettes
       @name += @using_json ? '.json' : '.yml'
 
       if File.exist?(filename)
         @recording = false
         file_content = File.open(filename, &:read)
-        parsed_content = @using_json ? JSON.parse(file_content) : YAML.load(file_content)
-        @sessions = @using_json ? RecordedJsonSession.load(parsed_content) : RecordedYamlSession.load(parsed_content)
+
+        # do the ERB substitution
+        unless @options[:erb].nil?
+          require 'ostruct'
+          namespace = OpenStruct.new(@options[:erb])
+          file_content = ERB.new(file_content).result(namespace.instance_eval{ binding })
+        end
+
+        # parse JSON/YAML
+        if @using_json
+          parsed_content = JSON.parse(file_content)
+          @sessions = RecordedJsonSession.load(parsed_content)
+        else
+          parsed_content = YAML.load(file_content)
+          @sessions = RecordedYamlSession.load(parsed_content)
+        end
+
       else
+        fail "No cassette '#{name}' found and recording has been turned off" if @options[:record] == :none
         @recording = true
         @sessions = []
       end
