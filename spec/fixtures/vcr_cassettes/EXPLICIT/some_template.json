@@ -1,0 +1,13 @@
+[
+  [
+    {
+      "operation": "read",
+      "type": "text",
+      "data": "WelcomeResponse={\"<%= something %>\":\"I_XSiCb1wcQgARIzJ_jRU8k2-kPVblJuNCxhYBnb\"}"
+    },
+    {
+      "operation": "write",
+      "data": "<%= bar %>"
+    }
+  ]
+]

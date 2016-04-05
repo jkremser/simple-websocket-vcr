@@ -1,0 +1,44 @@
+---
+websocket_interactions:
+- - operation: read
+    type: text
+    data: WelcomeResponse={"sessionId":"<%= foobar %>"}
+  - operation: write
+    data: something_1
+  - operation: read
+    type: text
+    data: 'GenericErrorResponse={"errorMessage":"Failed to process message [?]","stackTrace":"java.lang.IllegalArgumentException:
+      Cannot deserialize: [something_1]\n\tat org.hawkular.cmdgw.api.ApiDeserializer.fromHawkularFormat(ApiDeserializer.java:68)\n\tat
+      org.hawkular.cmdgw.api.ApiDeserializer.deserialize(ApiDeserializer.java:84)\n\tat
+      org.hawkular.cmdgw.command.ws.server.AbstractGatewayWebSocket.onMessage(AbstractGatewayWebSocket.java:213)\n\tat
+      sun.reflect.GeneratedMethodAccessor686.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat
+      java.lang.reflect.Method.invoke(Method.java:497)\n\tat io.undertow.websockets.jsr.annotated.BoundMethod.invoke(BoundMethod.java:87)\n\tat
+      io.undertow.websockets.jsr.annotated.AnnotatedEndpoint$2$1.run(AnnotatedEndpoint.java:150)\n\tat
+      io.undertow.websockets.jsr.ServerWebSocketContainer.invokeEndpointMethod(ServerWebSocketContainer.java:553)\n\tat
+      io.undertow.websockets.jsr.annotated.AnnotatedEndpoint$2.onMessage(AnnotatedEndpoint.java:145)\n\tat
+      io.undertow.websockets.jsr.FrameHandler$7.run(FrameHandler.java:283)\n\tat io.undertow.websockets.jsr.ServerWebSocketContainer.invokeEndpointMethod(ServerWebSocketContainer.java:553)\n\tat
+      io.undertow.websockets.jsr.ServerWebSocketContainer$5.run(ServerWebSocketContainer.java:538)\n\tat
+      io.undertow.websockets.jsr.OrderedExecutor$ExecutorTask.run(OrderedExecutor.java:67)\n\tat
+      java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\n\tat
+      java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat
+      java.lang.Thread.run(Thread.java:745)\n"}'
+  - operation: write
+    data: something_2
+  - operation: read
+    type: text
+    data: 'GenericErrorResponse={"errorMessage":"Failed to process message [?]","stackTrace":"java.lang.IllegalArgumentException:
+      Cannot deserialize: [something_2]\n\tat org.hawkular.cmdgw.api.ApiDeserializer.fromHawkularFormat(ApiDeserializer.java:68)\n\tat
+      org.hawkular.cmdgw.api.ApiDeserializer.deserialize(ApiDeserializer.java:84)\n\tat
+      org.hawkular.cmdgw.command.ws.server.AbstractGatewayWebSocket.onMessage(AbstractGatewayWebSocket.java:213)\n\tat
+      sun.reflect.GeneratedMethodAccessor686.invoke(Unknown Source)\n\tat sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n\tat
+      java.lang.reflect.Method.invoke(Method.java:497)\n\tat io.undertow.websockets.jsr.annotated.BoundMethod.invoke(BoundMethod.java:87)\n\tat
+      io.undertow.websockets.jsr.annotated.AnnotatedEndpoint$2$1.run(AnnotatedEndpoint.java:150)\n\tat
+      io.undertow.websockets.jsr.ServerWebSocketContainer.invokeEndpointMethod(ServerWebSocketContainer.java:553)\n\tat
+      io.undertow.websockets.jsr.annotated.AnnotatedEndpoint$2.onMessage(AnnotatedEndpoint.java:145)\n\tat
+      io.undertow.websockets.jsr.FrameHandler$7.run(FrameHandler.java:283)\n\tat io.undertow.websockets.jsr.ServerWebSocketContainer.invokeEndpointMethod(ServerWebSocketContainer.java:553)\n\tat
+      io.undertow.websockets.jsr.ServerWebSocketContainer$5.run(ServerWebSocketContainer.java:538)\n\tat
+      io.undertow.websockets.jsr.OrderedExecutor$ExecutorTask.run(OrderedExecutor.java:67)\n\tat
+      java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\n\tat
+      java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat
+      java.lang.Thread.run(Thread.java:745)\n"}'
+  - operation: close
