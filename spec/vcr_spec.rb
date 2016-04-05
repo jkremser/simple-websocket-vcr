@@ -47,6 +47,7 @@ describe 'VCR for WS' do
       c.hook_uris = [HOST]
     end
     WebSocketVCR.record(example, self) do
+      puts 'we are recording..' if WebSocketVCR.live?
       url = "ws://#{HOST}/hawkular/command-gateway/ui/ws"
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
@@ -284,6 +285,14 @@ describe 'VCR for WS' do
       end
       file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
       expect(File.readlines(file_path).grep(/<%= something %>/).size).to eq(1)
+    end
+  end
+
+  describe 'version' do
+    it 'should return the major, minor and micro components correctly' do
+      expect(WebSocketVCR.version).to include(WebSocketVCR.version.major.to_s)
+      expect(WebSocketVCR.version).to include(WebSocketVCR.version.minor.to_s)
+      expect(WebSocketVCR.version).to include(WebSocketVCR.version.patch.to_s)
     end
   end
 end
