@@ -29,10 +29,10 @@ module WebSocketVCR
       if recording?
         erb_variables = @options[:reverse_substitution] ? @options[:erb] : nil
         session = if @using_json
-          RecordedJsonSession.new([], erb_variables)
-        else
-          RecordedYamlSession.new([], erb_variables)
-        end
+                    RecordedJsonSession.new([], erb_variables)
+                  else
+                    RecordedYamlSession.new([], erb_variables)
+                  end
         @sessions.push(session)
         @sessions.last
       else
