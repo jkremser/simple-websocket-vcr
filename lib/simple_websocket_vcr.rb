@@ -74,6 +74,8 @@ module WebSocketVCR
   # @param options [Hash] options for the cassette
   # @option options [Symbol] :record if set to :none there will be no recording
   # @option options [Symbol] :erb a sub-hash with variables used for ERB substitution in given cassette
+  # @option options [Boolean] :reverse_substitution if true, the values of :erb hash will be replaced by their names in
+  #                                                 the cassette. It's turned-off by default.
   def use_cassette(name, options = {})
     fail ArgumentError, '`VCR.use_cassette` requires a block.' unless block_given?
     self.cassette = Cassette.new(name, options)

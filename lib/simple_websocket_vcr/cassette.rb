@@ -27,7 +27,13 @@ module WebSocketVCR
 
     def next_session
       if recording?
-        @sessions.push(@using_json ? RecordedJsonSession.new([]) : RecordedYamlSession.new([]))
+        erb_variables = @options[:reverse_substitution] ? @options[:erb] : nil
+        session = if @using_json
+          RecordedJsonSession.new([], erb_variables)
+        else
+          RecordedYamlSession.new([], erb_variables)
+        end
+        @sessions.push(session)
         @sessions.last
       else
         fail NoMoreSessionsError if @sessions.empty?
@@ -81,12 +87,18 @@ module WebSocketVCR
   class RecordedSession
     attr_reader :record_entries
 
-    def initialize(entries)
+    def initialize(entries, erb_variables = nil)
       @record_entries = entries
+      @erb_variables = erb_variables
     end
 
     def store(entry)
       hash = entry.is_a?(RecordEntry) ? entry.attributes.map(&:to_s) : entry.map { |k, v| [k.to_s, v.to_s] }.to_h
+      if !hash['data'].nil? && !@erb_variables.nil?
+        @erb_variables.each do |k, v|
+          hash['data'].gsub! v.to_s, "<%= #{k} %>"
+        end
+      end
       @record_entries << hash
     end
 

@@ -256,7 +256,7 @@ describe 'VCR for WS' do
       WebSocketVCR.configure do |c|
         c.hook_uris = [HOST]
       end
-      WebSocketVCR.use_cassette(cassette_path, erb: { something: 11_223_344 }) do
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 11_223_344 }, record: :none) do
         test_substitution '11223344'
       end
       file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
@@ -272,6 +272,18 @@ describe 'VCR for WS' do
       WebSocketVCR.use_cassette(cassette_path, erb: { something: 'world', bar: 'hello' }) do
         test_substitution 'world', 'hello'
       end
+    end
+
+    it 'with :erb set to {something: 11223344}, and :reverse_substitution it should record the cassette as template' do
+      cassette_path = '/EXPLICIT/some_other_template'
+      WebSocketVCR.configure do |c|
+        c.hook_uris = [HOST]
+      end
+      WebSocketVCR.use_cassette(cassette_path, erb: { something: 'WelcomeResponse' }, reverse_substitution: true) do
+        test_substitution 'unlikely_string'
+      end
+      file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
+      expect(File.readlines(file_path).grep(/<%= something %>/).size).to eq(1)
     end
   end
 end
