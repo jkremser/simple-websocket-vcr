@@ -13,13 +13,14 @@ require 'json'
 
 describe 'VCR for WS' do
   HOST = 'localhost:8080'.freeze
+  ON_TRAVIS = ENV['TRAVIS'] == 'true'
+
+  RSpec.configure do |c|
+    c.filter_run_excluding skip: true
+  end
 
   let(:example) do |e|
     e
-  end
-
-  let(:should_sleep) do |_|
-    !WebSocketVCR.cassette || WebSocketVCR.cassette.recording?
   end
 
   before(:each) do
@@ -35,7 +36,7 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1 if should_sleep
+      sleep 1 if WebSocketVCR.live?
 
       expect(c).not_to be nil
       expect(c.open?).to be true
@@ -52,7 +53,7 @@ describe 'VCR for WS' do
       c = WebSocket::Client::Simple.connect url do |client|
         client.on(:message, once: true, &:data)
       end
-      sleep 1 if should_sleep
+      sleep 1 if WebSocketVCR.live?
       c.send('something 1')
       c.send('something 2')
       c.send('something 3')
@@ -67,11 +68,11 @@ describe 'VCR for WS' do
     c = WebSocket::Client::Simple.connect url do |client|
       client.on(:message, once: true, &:data)
     end
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
 
     expect(c).not_to be nil
     expect(c.open?).to be true
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
     c.close
     expect(c.open?).to be false
   end
@@ -100,20 +101,20 @@ describe 'VCR for WS' do
     c = WebSocket::Client::Simple.connect url do |client|
       client.on(:message, once: true, &:data)
     end
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
     c.send('something_1')
     c.on(:message, once: true, &:data)
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
 
     c.send('something_2')
     c.on(:message, once: true, &:data)
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
 
     expect(c).not_to be nil
     expect(c.open?).to be true
     c.close
     expect(c.open?).to be false
-    sleep 1 if should_sleep
+    sleep 1 if WebSocketVCR.live?
   end
 
   it 'should record complex communications for json' do
@@ -244,7 +245,7 @@ describe 'VCR for WS' do
           expect(msg.data).to include(text1)
         end
       end
-      sleep 1 if should_sleep
+      sleep 1 if WebSocketVCR.live?
       text2 ||= 'something_1'
       c.send(text2)
       c.on(:message, once: true) do |msg|
@@ -294,5 +295,64 @@ describe 'VCR for WS' do
       expect(WebSocketVCR.version).to include(WebSocketVCR.version.minor.to_s)
       expect(WebSocketVCR.version).to include(WebSocketVCR.version.patch.to_s)
     end
+  end
+
+  def checks_for_echo_ws(file_path)
+    expect(File.readlines(file_path).grep(/hello/).size).to eq(2)
+    expect(File.readlines(file_path).grep(/how/).size).to eq(2)
+    expect(File.readlines(file_path).grep(/are/).size).to eq(2)
+    expect(File.readlines(file_path).grep(/you/).size).to eq(2)
+    expect(File.readlines(file_path).grep(/write/).size).to eq(4)
+    expect(File.readlines(file_path).grep(/read/).size).to eq(4)
+    expect(File.readlines(file_path).grep(/close/).size).to eq(1)
+  end
+
+  it 'should be able to store the recording with real communication into YAML', skip: !ON_TRAVIS do
+    WebSocketVCR.configure do |c|
+      c.hook_uris = ['echo.websocket.org']
+    end
+    WebSocketVCR.record(example, self) do
+      url = 'ws://echo.websocket.org'
+      c = WebSocket::Client::Simple.connect url do |client|
+        client.on(:message, &:data)
+      end
+      sleep 5 if WebSocketVCR.live?
+      c.send('hello')
+      c.send('how')
+      c.send('are')
+      c.send('you')
+      sleep 20 if WebSocketVCR.live?
+      c.close
+      expect(c.open?).to be false
+    end
+    # check that everything was recorded in the yaml file
+    cassette_name = 'VCR_for_WS/should_be_able_to_store_the_recording_with_real_communication_into_YAML.yml'
+    file_path = "#{WebSocketVCR.configuration.cassette_library_dir}/#{cassette_name}"
+    checks_for_echo_ws file_path
+  end
+
+  it 'should be able to store the recording with real communication into JSON', skip: !ON_TRAVIS do
+    WebSocketVCR.configure do |c|
+      c.hook_uris = ['echo.websocket.org']
+      c.json_cassettes = true
+    end
+    WebSocketVCR.record(example, self) do
+      url = 'ws://echo.websocket.org'
+      c = WebSocket::Client::Simple.connect url do |client|
+        client.on(:message, &:data)
+      end
+      sleep 5 if WebSocketVCR.live?
+      c.send('hello')
+      c.send('how')
+      c.send('are')
+      c.send('you')
+      sleep 20 if WebSocketVCR.live?
+      c.close
+      expect(c.open?).to be false
+    end
+    # check that everything was recorded in the json file
+    cassette_name = 'VCR_for_WS/should_be_able_to_store_the_recording_with_real_communication_into_JSON.json'
+    file_path = "#{WebSocketVCR.configuration.cassette_library_dir}/#{cassette_name}"
+    checks_for_echo_ws file_path
   end
 end
