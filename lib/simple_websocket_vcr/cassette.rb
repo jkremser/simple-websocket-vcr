@@ -93,7 +93,7 @@ module WebSocketVCR
     end
 
     def store(entry)
-      hash = entry.is_a?(RecordEntry) ? entry.attributes.map(&:to_s) : entry.map { |k, v| [k.to_s, v.to_s] }.to_h
+      hash = entry.is_a?(RecordEntry) ? entry.attributes.map(&:to_s) : Hash[entry.map { |k, v| [k.to_s, v.to_s] }]
       if !hash['data'].nil? && !@erb_variables.nil?
         @erb_variables.each do |k, v|
           hash['data'].gsub! v.to_s, "<%= #{k} %>"
