@@ -3,7 +3,10 @@
 This document describes the relevant changes between releases of the
 _simple-websocket-vcr_ project.
 
-### 0.0.7 (not released yet)
+### 0.0.8 (not released yet)
+
+### 0.0.7
+* new option `record: all`
 
 ### 0.0.6
 * Reverse substitution for cassettes that have ERB. Basically, if we are recording and these options are passed: `erb: {some_key: some_value}, reverse_substitution: true`, then when the framework is about to store the `some_value` into cassette (JSON or YAML), the `<%= some_key =>` is stored instead of the value. So it allows to record the templates.

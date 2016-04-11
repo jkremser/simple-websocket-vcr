@@ -153,6 +153,26 @@ describe 'VCR for WS' do
     expect(File.readlines(file_path).grep(/close/).size).to eq(1)
   end
 
+  it 'should re-record the tape if enforced' do
+    WebSocketVCR.configure do |c|
+      c.hook_uris = [HOST]
+    end
+    cassette_path = '/EXPLICIT/some_explicitly_specified_cassette_that_should_be_re-recorded'
+    WebSocketVCR.use_cassette(cassette_path) do
+      test_complex
+    end
+
+    file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
+    original_last_modified = File.mtime(file_path)
+
+    # run the test again w/ record: :all option set
+    WebSocketVCR.use_cassette(cassette_path, record: :all) do
+      test_complex
+    end
+    new_last_modified = File.mtime(file_path)
+    expect(original_last_modified).to be < new_last_modified
+  end
+
   context 'automatically picked cassette name is ok, when using context foo' do
     it 'and example bar' do
       WebSocketVCR.record(example, self) do

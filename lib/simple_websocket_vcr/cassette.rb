@@ -15,7 +15,7 @@ module WebSocketVCR
       @using_json = WebSocketVCR.configuration.json_cassettes
       @name += @using_json ? '.json' : '.yml'
 
-      if File.exist?(filename)
+      if File.exist?(filename) && @options[:record] != :all
         @recording = false
         @sessions = initialize_sessions filename
       else

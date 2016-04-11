@@ -72,7 +72,7 @@ module WebSocketVCR
   # Use the specified cassette for either recording the real communication or replaying it during the tests.
   # @param name [String] the cassette
   # @param options [Hash] options for the cassette
-  # @option options [Symbol] :record if set to :none there will be no recording
+  # @option options [Symbol] :record if set to :none there will be no recording; :all means record all the time
   # @option options [Symbol] :erb a sub-hash with variables used for ERB substitution in given cassette
   # @option options [Boolean] :reverse_substitution if true, the values of :erb hash will be replaced by their names in
   #                                                 the cassette. It's turned-off by default.
