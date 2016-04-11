@@ -157,20 +157,30 @@ describe 'VCR for WS' do
     WebSocketVCR.configure do |c|
       c.hook_uris = [HOST]
     end
-    cassette_path = '/EXPLICIT/some_explicitly_specified_cassette_that_should_be_re-recorded'
+    cassette_path = '/EXPLICIT/some_explicitly_specified_cassette_should_be_re-recorded'
+
+    # run the test for the 1st time
     WebSocketVCR.use_cassette(cassette_path) do
       test_complex
     end
+    if ON_TRAVIS
+      expect do
+        WebSocketVCR.use_cassette(cassette_path, record: :all) do
+          test_complex
+        end
+        fail 'this code should not be reachable'
+      end.to raise_error(/Connection refused/)
+    else
+      file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
+      original_last_modified = File.mtime(file_path)
 
-    file_path = "#{WebSocketVCR.configuration.cassette_library_dir}#{cassette_path}.yml"
-    original_last_modified = File.mtime(file_path)
-
-    # run the test again w/ record: :all option set
-    WebSocketVCR.use_cassette(cassette_path, record: :all) do
-      test_complex
+      # run the test again w/ record: :all option set
+      WebSocketVCR.use_cassette(cassette_path, record: :all) do
+        test_complex
+      end
+      new_last_modified = File.mtime(file_path)
+      expect(original_last_modified).to be < new_last_modified
     end
-    new_last_modified = File.mtime(file_path)
-    expect(original_last_modified).to be < new_last_modified
   end
 
   context 'automatically picked cassette name is ok, when using context foo' do
