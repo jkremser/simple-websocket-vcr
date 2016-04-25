@@ -10,6 +10,7 @@ require 'simple_websocket_vcr/monkey_patch'
 
 module WebSocketVCR
   extend self
+  attr_accessor :cassette
 
   # @return [String] the current version.
   # @note This string also has singleton methods:
@@ -48,14 +49,6 @@ module WebSocketVCR
 
   def configuration
     @configuration ||= Configuration.new
-  end
-
-  def cassette
-    @cassette
-  end
-
-  def cassette=(v)
-    @cassette = v
   end
 
   def disabled
