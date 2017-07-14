@@ -79,16 +79,16 @@ module WebSocketVCR
       if @live
         rec = @session
         @client.on(event, params) do |msg|
-          data = msg.type == :text ? msg.data : Base64.decode64(msg.data)
+          data = msg.type.to_s == 'text' ? msg.data : Base64.encode64(msg.data)
           rec.store(operation: 'read', type: msg.type, data: data)
           yield(msg)
         end
       else
-        wait_for_reads(event, params[:once])
+        wait_for_reads(event) unless @thread && @thread.alive?
       end
     end
 
-    def wait_for_reads(event, once = false)
+    def wait_for_reads(event)
       @thread = Thread.new do
         # if the next recorded operation is a 'read', take all the reads until next write
         # and translate them to the events
@@ -97,7 +97,7 @@ module WebSocketVCR
             if @session.head.operation == 'read'
               record = @session.next
               data = record.data
-              data = Base64.decode64(msg) if record.type != 'text'
+              data = Base64.decode64(data) if record.type != 'text'
               data = ::WebSocket::Frame::Data.new(data)
 
               def data.data
@@ -105,7 +105,7 @@ module WebSocketVCR
               end
 
               emit(event, data)
-              break if once
+              break if __events.empty?
             else
               sleep 0.1 # TODO: config
             end

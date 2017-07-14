@@ -65,20 +65,13 @@ module WebSocketVCR
     def initialize_sessions(filename)
       file_content = File.open(filename, &:read)
 
-      # do the ERB substitution
-      unless @options[:erb].nil?
-        require 'ostruct'
-        namespace = OpenStruct.new(@options[:erb])
-        file_content = ERB.new(file_content).result(namespace.instance_eval { binding })
-      end
-
       # parse JSON/YAML
       if @using_json
         parsed_content = JSON.parse(file_content)
-        sessions = RecordedJsonSession.load(parsed_content)
+        sessions = RecordedJsonSession.load(parsed_content, @options[:erb])
       else
         parsed_content = YAML.load(file_content)
-        sessions = RecordedYamlSession.load(parsed_content)
+        sessions = RecordedYamlSession.load(parsed_content, @options[:erb])
       end
       sessions
     end
@@ -94,7 +87,7 @@ module WebSocketVCR
 
     def store(entry)
       hash = entry.is_a?(RecordEntry) ? entry.attributes.map(&:to_s) : Hash[entry.map { |k, v| [k.to_s, v.to_s] }]
-      if !hash['data'].nil? && !@erb_variables.nil?
+      if !hash['data'].nil? && !@erb_variables.nil? && hash['type'] != 'binary'
         @erb_variables.each do |k, v|
           hash['data'].gsub! v.to_s, "<%= #{k} %>"
         end
@@ -103,11 +96,11 @@ module WebSocketVCR
     end
 
     def next
-      RecordEntry.parse(@record_entries.shift)
+      RecordEntry.parse(@record_entries.shift, @erb_variables)
     end
 
     def head
-      @record_entries.empty? ? nil : RecordEntry.parse(@record_entries.first)
+      @record_entries.empty? ? nil : RecordEntry.parse(@record_entries.first, @erb_variables)
     end
 
     def method_missing(method_name, *args, &block)
@@ -116,25 +109,33 @@ module WebSocketVCR
   end
 
   class RecordedJsonSession < RecordedSession
-    def self.load(json)
-      json.map { |session| RecordedJsonSession.new(session) }
+    def self.load(json, erb_variables = nil)
+      json.map { |session| RecordedJsonSession.new(session, erb_variables) }
     end
   end
 
   class RecordedYamlSession < RecordedSession
-    def self.load(yaml)
-      yaml['websocket_interactions'].map { |session| RecordedYamlSession.new(session) }
+    def self.load(yaml, erb_variables = nil)
+      yaml['websocket_interactions'].map { |session| RecordedYamlSession.new(session, erb_variables) }
     end
   end
 
   class RecordEntry
     attr_accessor :operation, :type, :data
 
-    def self.parse(obj)
+    def self.parse(obj, erb_variables = nil)
       record_entry = RecordEntry.new
       record_entry.operation = obj['operation']
       record_entry.type = obj['type'] if obj['type']
       record_entry.data = obj['data'] if obj['data']
+
+      # do the ERB substitution
+      if erb_variables && record_entry.type != 'binary'
+        require 'ostruct'
+        namespace = OpenStruct.new(erb_variables)
+        record_entry.data = ERB.new(record_entry.data).result(namespace.instance_eval { binding })
+      end
+
       record_entry
     end
   end
