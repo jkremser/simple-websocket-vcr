@@ -2,11 +2,13 @@
   [
     {
       "operation": "read",
+      "event": "message",
       "type": "text",
       "data": "WelcomeResponse={\"<%= something %>\":\"I_XSiCb1wcQgARIzJ_jRU8k2-kPVblJuNCxhYBnb\"}"
     },
     {
       "operation": "write",
+      "event": "send",
       "data": "<%= bar %>"
     }
   ]

@@ -1,11 +1,15 @@
 ---
 websocket_interactions:
 - - operation: read
+    event: message
     type: text
     data: WelcomeResponse={"sessionId":"XQVVtE53wxz1lmMsqz2TbmR68ilFzDxLOOpkKGpd"}
   - operation: write
+    send: message
     data: something 1
   - operation: write
+    send: message
     data: something 2
   - operation: write
+    send: message
     data: something 3

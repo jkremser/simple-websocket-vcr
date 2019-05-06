@@ -1,11 +1,14 @@
 ---
 websocket_interactions:
 - - operation: read
+    event: message
     type: text
     data: WelcomeResponse={"sessionId":"_Q8LZN4jeyX27Qb2qjiz_3HR9Ckoa1S-pHMaJi9q"}
   - operation: write
+    event: send
     data: something_1
   - operation: read
+    event: message
     type: text
     data: 'GenericErrorResponse={"errorMessage":"Failed to process message [?]","stackTrace":"java.lang.IllegalArgumentException:
       Cannot deserialize: [something_1]\n\tat org.hawkular.cmdgw.api.ApiDeserializer.fromHawkularFormat(ApiDeserializer.java:68)\n\tat
@@ -24,8 +27,10 @@ websocket_interactions:
       java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat
       java.lang.Thread.run(Thread.java:745)\n"}'
   - operation: write
+    event: send
     data: something_2
   - operation: read
+    event: message
     type: text
     data: 'GenericErrorResponse={"errorMessage":"Failed to process message [?]","stackTrace":"java.lang.IllegalArgumentException:
       Cannot deserialize: [something_2]\n\tat org.hawkular.cmdgw.api.ApiDeserializer.fromHawkularFormat(ApiDeserializer.java:68)\n\tat
@@ -43,4 +48,5 @@ websocket_interactions:
       java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\n\tat
       java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat
       java.lang.Thread.run(Thread.java:745)\n"}'
-  - operation: close
+  - operation: write
+    event: close
