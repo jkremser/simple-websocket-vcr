@@ -34,5 +34,27 @@ However, this projects aims on the web socket protocol where normally there is o
     end
   end
 ```
+([source](https://github.com/Jiri-Kremser/simple-websocket-vcr/blob/master/spec/vcr_spec.rb#L46))
+
+after running the code above, you should end up with a file that captured the interactions.
+
+```yaml
+---
+websocket_interactions:
+- - operation: read
+    event: message
+    type: text
+    data: WelcomeResponse={"sessionId":"XQVVtE53wxz1lmMsqz2TbmR68ilFzDxLOOpkKGpd"}
+  - operation: write
+    send: message
+    data: something 1
+  - operation: write
+    send: message
+    data: something 2
+  - operation: write
+    send: message
+    data: something 3
+```
+([source](spec/fixtures/vcr_cassettes/VCR_for_WS/should_record_also_the_outgoing_communication.yml))
 
 For more details consult the [specs](spec/vcr_spec.rb).
