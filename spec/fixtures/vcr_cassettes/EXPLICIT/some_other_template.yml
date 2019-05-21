@@ -1,7 +1,9 @@
 ---
 websocket_interactions:
 - - operation: read
+    event: message
     type: text
     data: <%= something %>={"sessionId":"_5_u_6hSDOVe0LlvGyx32CGR-f98iKwHQtjoQKy8"}
   - operation: write
+    event: send
     data: something_1

@@ -2,11 +2,13 @@
   [
     {
       "operation": "read",
+      "event": "message",
       "type": "text",
       "data": "WelcomeResponse={\"sessionId\":\"rfynzN_MQHaFvhedHpqiQj1zFo0hBHsiICU4pmX-\"}"
     },
     {
-      "operation": "close"
+      "operation": "write",
+      "event": "close"
     }
   ]
 ]

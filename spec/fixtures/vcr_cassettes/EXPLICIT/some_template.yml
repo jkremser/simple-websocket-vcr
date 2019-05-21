@@ -1,11 +1,14 @@
 ---
 websocket_interactions:
 - - operation: read
+    event: message
     type: text
     data: WelcomeResponse={"<%= something %>":"KOrViCF_93axNx-WyGlhT6yktwqbJIl97mrxQXC5"}
   - operation: write
+    event: send
     data: something_1
   - operation: read
+    event: message
     type: text
     data: 'GenericErrorResponse={"errorMessage":"Failed to process message [?]","stackTrace":"java.lang.IllegalArgumentException:
       Cannot deserialize: [something_1]\n\tat org.hawkular.cmdgw.api.ApiDeserializer.fromHawkularFormat(ApiDeserializer.java:68)\n\tat

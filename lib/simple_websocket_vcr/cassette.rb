@@ -121,11 +121,12 @@ module WebSocketVCR
   end
 
   class RecordEntry
-    attr_accessor :operation, :type, :data
+    attr_accessor :operation, :event, :type, :data
 
     def self.parse(obj, erb_variables = nil)
       record_entry = RecordEntry.new
       record_entry.operation = obj['operation']
+      record_entry.event = obj['event'] if obj['event']
       record_entry.type = obj['type'] if obj['type']
       record_entry.data = obj['data'] if obj['data']
 

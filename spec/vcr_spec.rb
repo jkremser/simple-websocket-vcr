@@ -319,6 +319,76 @@ describe 'VCR for WS' do
     end
   end
 
+  describe 'with multiple kinds of events' do
+    it 'works' do
+      WebSocketVCR.configure do |c|
+        c.hook_uris = ['echo.websocket.org']
+      end
+      opened = false
+      messages = []
+      closed = false
+      WebSocketVCR.record(example, self) do
+        url = 'ws://echo.websocket.org'
+        c = WebSocket::Client::Simple.connect url do |client|
+          client.on(:open) do
+            opened = true
+          end
+          client.on(:message) do |event|
+            messages << event.data
+          end
+          client.on(:close) do
+            closed = true
+          end
+        end
+        sleep 5 if WebSocketVCR.live?
+        c.send('hello')
+        c.send('how')
+        c.send('are')
+        c.send('you')
+        sleep 20 if WebSocketVCR.live?
+        c.close
+        expect(c.open?).to be false
+      end
+      expect(opened).to eq(true)
+      expect(messages).to eq(%w(hello how are you))
+      expect(closed).to eq(true)
+    end
+  end
+
+  describe 'when server closes the connection' do
+    it 'works' do
+      WebSocketVCR.configure do |c|
+        c.hook_uris = ['echo.websocket.org']
+      end
+      opened = false
+      messages = []
+      closed = false
+      cassette_path = 'VCR_for_WS/when_server_closes_connection_works'
+      WebSocketVCR.use_cassette(cassette_path) do
+        url = 'ws://echo.websocket.org'
+        c = WebSocket::Client::Simple.connect url do |client|
+          client.on(:open) do
+            opened = true
+          end
+          client.on(:message) do |event|
+            messages << event.data
+          end
+          client.on(:close) do
+            closed = true
+          end
+        end
+        c.send('hello')
+        c.send('how')
+        c.send('are')
+        c.send('you')
+        expect { c.close }.not_to raise_error
+      end
+      expect(opened).to eq(true)
+      expect(messages).to eq(%w(hello how are you))
+      expect(closed).to eq(true)
+    end
+  end
+
   describe 'version' do
     it 'should return the major, minor and micro components correctly' do
       expect(WebSocketVCR.version).to include(WebSocketVCR.version.major.to_s)
@@ -332,7 +402,7 @@ describe 'VCR for WS' do
     expect(File.readlines(file_path).grep(/how/).size).to eq(2)
     expect(File.readlines(file_path).grep(/are/).size).to eq(2)
     expect(File.readlines(file_path).grep(/you/).size).to eq(2)
-    expect(File.readlines(file_path).grep(/write/).size).to eq(4)
+    expect(File.readlines(file_path).grep(/write/).size).to eq(5)
     expect(File.readlines(file_path).grep(/read/).size).to eq(4)
     expect(File.readlines(file_path).grep(/close/).size).to eq(1)
   end

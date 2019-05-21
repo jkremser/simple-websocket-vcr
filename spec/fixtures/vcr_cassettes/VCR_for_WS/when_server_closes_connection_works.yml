@@ -1,0 +1,34 @@
+---
+websocket_interactions:
+- - operation: read
+    event: open
+  - operation: write
+    event: send
+    data: hello
+  - operation: write
+    event: send
+    data: how
+  - operation: write
+    event: send
+    data: are
+  - operation: write
+    event: send
+    data: you
+  - operation: read
+    event: message
+    type: text
+    data: hello
+  - operation: read
+    event: message
+    type: text
+    data: how
+  - operation: read
+    event: message
+    type: text
+    data: are
+  - operation: read
+    event: message
+    type: text
+    data: you
+  - operation: read
+    event: close
