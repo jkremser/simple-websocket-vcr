@@ -6,4 +6,6 @@
 [![Gem Version](https://badge.fury.io/rb/simple-websocket-vcr.svg)](https://badge.fury.io/rb/simple-websocket-vcr)
 
 
-TODO: this
+Based on the idea of [vcr](https://github.com/vcr/vcr) project which record the http interactions and store them as files that can be replayed later and simulate the real communication counterpart (mostly server).
+
+However, this projects aims on the web socket protocol where normally there is only a single HTTP connection and multiple messages or frames being sent over the channel.
